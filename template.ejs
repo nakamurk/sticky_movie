@@ -38,15 +38,14 @@
 
       reader.addEventListener("load", () => {
         const readData = JSON.parse(reader.result);
-alert(readData);
-TODO
+        if (readData.video_id != getVideoId()) {
+          link = document.createElement("a");
+alert(encodeURIComponent(readData.comments));
+          link.href = "http://" + window.location.host + "?video_id=" + readData.video_id;
+          link.click();
+        }
       });
     });
-
-    function readJSON() {
-      return "TODO";
-    }
-
 
     function toggleUsage() {
       let usage = document.getElementById('usage');
@@ -74,7 +73,7 @@ TODO
       player = new YT.Player('player', {
         height: '360',
         width: '640',
-        videoId: '<%= VIDEO_ID %>',
+        videoId: getVideoId(),
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange
@@ -220,8 +219,8 @@ TODO
     }
 
     function replaceVideo() {
-      const link = document.createElement("a");
-      link.href = "http://172.21.228.34:8080?video_id=" + getVideoId();
+      link = document.createElement("a");
+      link.href = "http://" + window.location.host + "?video_id=" + getVideoId();
       link.click();
     }
   </script>
