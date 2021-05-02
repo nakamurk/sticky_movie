@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
 </head>
 <body>
   <h1><%= VIDEO_ID %></h1>
@@ -30,6 +30,26 @@
   <div id="player"></div>
 
   <script>
+    let comments;
+    let queryString = window.location.search;
+    let queryObject = new Object();
+    if (queryString) {
+      queryString = queryString.substring(1);
+      let params = queryString.split('&');
+      for (i = 0; i < params.length; i++) {
+        let element = params[i].split('=');
+        switch (element[0]) {
+          case "comments":
+            comments = JSON.parse(decodeURIComponent(element[1]));
+        }
+      }
+      if (comments) {
+        for (let k in comments) {
+          alert(k); // maketable TODO
+        }
+      }
+    }
+
     let file = document.getElementById('myJSON');
     file.addEventListener('change', e => {
       let result = e.target.files[0];
@@ -40,8 +60,7 @@
         const readData = JSON.parse(reader.result);
         if (readData.video_id != getVideoId()) {
           link = document.createElement("a");
-alert(encodeURIComponent(readData.comments));
-          link.href = "http://" + window.location.host + "?video_id=" + readData.video_id;
+          link.href = "http://" + window.location.host + "?video_id=" + readData.video_id + "&comments=" + encodeURIComponent(JSON.stringify(readData.comments)); // TODO sessionストレージなど利用することを検討する
           link.click();
         }
       });
