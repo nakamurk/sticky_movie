@@ -52,7 +52,7 @@
 
   <script>
     const project_code = "sticky_movie";
-    const version = "v1.0";
+    const version = "v1.1";
     const endpoint = "index.html";
 
     let video_id;
@@ -170,6 +170,12 @@
 
     function getSleepTime() {
       return document.getElementById('sleepTime').value;
+    }
+
+    function backVideo() {
+      let seekTime = getCurrentTime() - getSleepTime();
+      seekTime = (seekTime < 0) ? 0 : seekTime;
+      player.seekTo(seekTime);
     }
 
     function getComment() {
