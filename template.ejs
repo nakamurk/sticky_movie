@@ -6,25 +6,10 @@
 <title>Document</title>
 </head>
 <body>
-  <h1><%= VIDEO_ID %></h1>
-  <input type="text" id="videoId" value="<%= VIDEO_ID %>">
-  <button onclick="replaceVideo()">に移動</button><br>
+  <h1>sticky_movie</h1>
+  videoId: <input type="text" id="videoId" style="width: 300px">
   <input type="file" id="myJSON" accept="text/json" />
-  <div style="border:solid 1px #ddd; padding :10px; display:none;" id="usage">
-    <ul>
-      <li>スペースキーまたは K キー: 再生 / 一時停止</li>
-      <li>左矢印キー: 現在の動画を 5 秒戻す</li>
-      <li>右矢印キー: 現在の動画を 5 秒進める</li>
-      <li>上矢印キー: 音量を上げる</li>
-      <li>下矢印キー: 音量を下げる</li>
-      <li>F キー: 全画面モードを切り替える</li>
-      <li>J キー: 現在の動画を 10 秒戻す</li>
-      <li>L キー: 現在の動画を 10 秒進める</li>
-      <li>M キー: ミュート / ミュート解除を切り替える</li>
-      <li>0～9 キー: 指定した位置に移動する。0 は動画の先頭へ、1 は全体の 10% の位置へ、2 は全体の 20% の位置へ移動します。</li>
-    </ul>
-  </div>
-  <button id="usageButton" onclick="toggleUsage()">Usage開閉</button>
+
   <hr>
 
   <div id="player"></div>
@@ -49,8 +34,28 @@
     </tbody>
   </table>
   <br><button onclick="downloadJSON()">保存</button>
+  <div style="border:solid 1px #ddd; padding :10px; display:none;" id="usage">
+    <ul>
+      <li>スペースキーまたは K キー: 再生 / 一時停止</li>
+      <li>左矢印キー: 現在の動画を 5 秒戻す</li>
+      <li>右矢印キー: 現在の動画を 5 秒進める</li>
+      <li>上矢印キー: 音量を上げる</li>
+      <li>下矢印キー: 音量を下げる</li>
+      <li>F キー: 全画面モードを切り替える</li>
+      <li>J キー: 現在の動画を 10 秒戻す</li>
+      <li>L キー: 現在の動画を 10 秒進める</li>
+      <li>M キー: ミュート / ミュート解除を切り替える</li>
+      <li>0～9 キー: 指定した位置に移動する。0 は動画の先頭へ、1 は全体の 10% の位置へ、2 は全体の 20% の位置へ移動します。</li>
+    </ul>
+  </div>
+  <button id="usageButton" onclick="toggleUsage()">Usage開閉</button>
 
   <script>
+    const project_code = "sticky_movie";
+    const version = "v1.0";
+    const endpoint = "index.html";
+
+    let video_id;
     let rowNumber = 0;
     let sleepTime = 0;
 
@@ -63,16 +68,16 @@
       for (i = 0; i < params.length; i++) {
         let element = params[i].split('=');
         switch (element[0]) {
+          case "video_id":
+            video_id = element[1];
+            break;
           case "comments":
             comments = JSON.parse(decodeURIComponent(element[1]));
+            break;
         }
       }
       if (comments) {
         for (let k in comments) {
-alert(rowNumber);
-          alert(comments[k].seek, comments[k].sleep, comments[k].comment);
-          alert(comments[k].sleep, comments[k].comment);
-          alert(comments[k].comment);
           addRow(comments[k].seek, comments[k].sleep, comments[k].comment);
         }
       }
@@ -88,7 +93,7 @@ alert(rowNumber);
         const readData = JSON.parse(reader.result);
         if (readData.video_id != getVideoId()) {
           link = document.createElement("a");
-          link.href = "http://" + window.location.host + "?video_id=" + readData.video_id + "&comments=" + encodeURIComponent(JSON.stringify(readData.comments)); // TODO sessionストレージなど利用することを検討する
+          link.href = "http://" + window.location.host + "/" + project_code + "/" + version + "/" + endpoint + "?video_id=" + readData.video_id + "&comments=" + encodeURIComponent(JSON.stringify(readData.comments)); // TODO sessionストレージなど利用することを検討する
           link.click();
         }
       });
@@ -125,6 +130,11 @@ alert(rowNumber);
       });
     }
 
+    const videoId = document.getElementById('videoId');
+    videoId.addEventListener('input', () => {
+      player.cueVideoById({videoId: videoId.value});
+    });
+
     function onPlayerReady(event) {
       event.target.playVideo();
     }
@@ -148,6 +158,11 @@ alert(rowNumber);
     function getVideoId() {
       return document.getElementById('videoId').value;
     }
+
+    function setVideoId() {
+      document.getElementById('videoId').value = video_id;
+    }
+    setVideoId();
 
     function getCurrentTime() {
       return player.getCurrentTime();
@@ -265,12 +280,6 @@ alert(rowNumber);
       const link = document.createElement("a");
       link.href = "data:text/plain," + encodeURIComponent(data);
       link.download = filename;
-      link.click();
-    }
-
-    function replaceVideo() {
-      link = document.createElement("a");
-      link.href = "http://" + window.location.host + "?video_id=" + getVideoId();
       link.click();
     }
   </script>
