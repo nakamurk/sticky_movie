@@ -86,7 +86,7 @@
     resetTable();
 
     const project_code = "sticky_movie";
-    const version = "v1.1";
+    const version = "beta_v1.2";
     const endpoint = "index.html";
 
     let video_id;
@@ -155,20 +155,18 @@
       event.target.playVideo();
     }
 
-    let done = false;
+    let videoTimer;
     function onPlayerStateChange(event) {
-      if (event.data == YT.PlayerState.PLAYING && !done && sleepTime > 0) {
-        setTimeout(pauseVideo, sleepTime * 1000);
-        done = true;
+      if (event.data == YT.PlayerState.PLAYING && sleepTime > 0) {
+        clearTimeout(videoTimer);
+        videoTimer = setTimeout(pauseVideo, sleepTime * 1000);
       }
     }
     function pauseVideo() {
       player.pauseVideo();
-      done = false;
     }
     function stopVideo() {
       player.stopVideo();
-      done = false;
     }
 
     function getVideoId() {
