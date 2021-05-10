@@ -104,7 +104,13 @@
       reader.addEventListener("load", () => {
         const readData = JSON.parse(reader.result);
         setVideoId(readData.video_id);
+
         resetTable();
+        const coms = readData.comments;
+        for (let c in coms) {
+          addRow(coms[c].seek, coms[c].sleep, coms[c].comment);
+        }
+
         player.cueVideoById({videoId: videoId.value});
       });
     });
