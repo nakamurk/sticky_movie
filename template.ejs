@@ -86,7 +86,7 @@
     resetTable();
 
     const project_code = "sticky_movie";
-    const version = "beta_v1.2";
+    const version = "beta_v1.3";
     const endpoint = "index.html";
 
     let video_id;
@@ -148,6 +148,7 @@
 
     const videoId = document.getElementById('videoId');
     videoId.addEventListener('input', () => {
+      resetTable();
       player.cueVideoById({videoId: videoId.value});
     });
 
